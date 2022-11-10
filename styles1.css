@@ -1,0 +1,64 @@
+div{
+    display:block;
+    /* justify-content: space-around;    */
+
+
+}
+
+#container{
+    border: 2px solid rgb(229, 195, 229);
+    padding: 80px ;
+    display:flex;
+    justify-content: space-around;
+
+}
+
+
+p{
+    display: inline;
+}
+@media only screen and (max-width:1000px){
+    body{
+        background-color: rgb(156, 82, 240);
+    }
+
+    
+}
+
+/*tablet style */
+@media only screen and (max-width:768px){
+    body{
+        background-color: rgb(255, 111, 197);
+    }
+ 
+}
+
+
+/*phone style */
+ @media only screen and (max-width:400px){
+    body{
+        background-color: rgb(241, 189, 241);
+    }
+}
+
+
+
+.hi{
+    border: 2px dotted rgb(49, 241, 49);
+
+}
+
+.op{
+    border: 2px inset rgb(72, 5, 122);
+
+}
+
+.oi{
+    border: 2px double rgb(242, 94, 222);
+
+}
+
+.pu{
+    border: 2px groove rgb(237, 156, 33);
+
+}

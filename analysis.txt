@@ -1,0 +1,11 @@
+Adminitrator:
+    Name: String
+    Region: String
+    Department: [String]
+    is_chief:Boolean
+    Languages: [String]
+
+Council:
+    Members:[Adminitrator]
+    Chief: Adminitrator
+
