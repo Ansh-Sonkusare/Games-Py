@@ -1,7 +1,6 @@
-k = 1
-s = 0
-for i in range(0,1):
+import pokemon
 
-    i = k+1
-    s += ((2*i)-1)
-        
+a = pokemon.Pokemon("Starmie" , "Water" , 36 , 9)
+print(a.health_points)
+print(a.lose_round(9))
+print(a.health_points)
