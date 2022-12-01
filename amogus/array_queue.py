@@ -4,7 +4,7 @@ class Queue:
     __slots__=['__front','__back','__size','__array']
 
     def __init__ (self,capacity=3):
-        self.__array=arrays.Array(capacity)
+        self.__array=[]
         self.__front= 0
         self.__back = 0
         self.__size = 0
@@ -12,7 +12,7 @@ class Queue:
     # methods:
     # no double __ is public
     def is_empty(self):
-        return self.__size == 0
+        return self.__back == 0
 
     def size(self):
         return self.__size
@@ -29,20 +29,21 @@ class Queue:
     # enqueue
     # add value 
     def enqueue(self,value):
-        self.__array[self.__back] = value
-        self.__back = (self.__back+1)% len(self.__array)
-        self.__size +=1
+        # print(self.__back)
+        self.__array.append(value)
+        # self.__back = (self.__back+1)% len(self.__array)
+        self.__back +=1
 
         if self.__back == self.__front:
             self.__resize()
     
     # dequeue
     def dequeue(self):
-        if self.__size <= 0:
+        if self.__back <= 0:
             raise IndexError ("cannot dequeue from an empty queue")
-        value = self.__array[self.__front]
-        self.__front = (self.__front+1)% len(self.__array)
-        self.__size -=1
+        value = self.__array.pop(0)
+        # self.__front = (self.__front+1)% len(self.__array)
+        self.__back -=1
 
         return value
 
@@ -64,4 +65,20 @@ class Queue:
         return self.__array[self.__front]
     def get_back(self):
         return self.__array[self.__back-1]
+
+def main():
+    q = Queue(6)
+    q.enqueue(1)
+    q.enqueue(2)
+    q.enqueue(3)
+    q.enqueue(4)
+    q.enqueue(5)
+    print(q)
+    while True:
+        input()
+        a = q.dequeue()
+        print(q)
+        q.enqueue(a)
+        print(q)
+
 

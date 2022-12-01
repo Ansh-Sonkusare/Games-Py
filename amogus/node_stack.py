@@ -43,3 +43,7 @@ class Stack:
         return self.__top==None
 
 
+s = Stack()
+s.push(1)
+s.push(2)
+

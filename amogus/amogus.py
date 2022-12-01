@@ -45,6 +45,8 @@ class Crewmate:
 
 	def next_task(self):
 		return self.__tasks.pop()
+	def check_if_tasks(self):
+		return self.__tasks.is_empty()
 	def kill(self):
 		self.__murdered = True
 		return 
@@ -56,39 +58,37 @@ class Crewmate:
 	def __repr__(self) -> str:
 		return f"Crewmate:\n\
 	color={self.__color} \n\
-	murdered={self.__color} \n\
+	murdered={self.__murdered} \n\
 	tasks={self.__tasks}" 
 
 
 class Ship:
-	__slots__ = ["__locations", "__tasks" , "__cafetaria"  , "__locs_2" , "__survived" , "__murdered"]
+	__slots__ = ["__locations", "__tasks" , "__cafetaria"   , "__survived" , "__murdered" , "__imp"]
 	
 	def __init__ (self,tasks , imposters = 1 ):
 
-
+		self.__imp = imposters
 		# initialisation
-		self.__locs_2 = dict()
-		self.__survived = []
-		self.__murdered = []
+		self.__survived = node_stack.Stack()
+		self.__murdered = node_stack.Stack()
 		__colours = ["Black", "Blue", "Brown", "Cyan", "Green", "Pink", "Purple", "Red", "White",  "Yellow"]
 		random.shuffle(__colours)
+		# random.shuffle(tasks)
 		self.__tasks = tasks
 		self.__locations= dict()
-		self.__cafetaria = array_queue.Queue()
+		crewmates = 10 - imposters	
+		
+		self.__cafetaria = array_queue.Queue(crewmates)
 
 		if(imposters>4 or imposters < 1):
 			raise ValueError
 		crewmates = 10 - imposters	
 
-		# for task in tasks:
-		# 	location = task.get_location()
-		# 	if(location not in self.__locations.keys()):
-		# 		self.__locations[task.get_location()] = []
-		# 		# self.__locations[task.get_location()].append(task)
-		# 	self.__locations[task.get_location()].append(task)
+		
 		tasks_per_crew = math.ceil(len(self.__tasks)/crewmates)
 
-
+		for task in tasks:
+			self.__locations[task.get_location()] = False
 	
 		for i in range(crewmates):
 			# print(len(self.__tasks))
@@ -102,18 +102,58 @@ class Ship:
 					break
 				crew.assign_task(self.__tasks.pop())
 			self.__cafetaria.enqueue(crew)
+			# print(self.__cafetaria)
 		locations = self.__locations
+	
+			
+	def check_result(self):
+		print(self.__cafetaria.is_empty())
+		if(self.__cafetaria.is_empty()):
+			# m = [str(i) for i in self.__murdered]
+			# s = [str(i) for i in self.__survived]
+
+			print(f"murdered: {self.__murdered}" )
+			print(f"surviving: {self.__survived}" )
+			return False
+		return True
 
 
 	def get_locations(self):
 		return self.__locations
 	def next_turn(self):
 		print(self.__cafetaria)
-		print(self.__tasks)
-		# print(__colours)
-		print(self.__locations)
 
+		loc = list(self.__locations.keys())
+		lic = self.__locations.copy()
+		for i in range(self.__imp):
+			l = random.choice(loc)
+			lic[l] = True
+		c = self.__cafetaria.dequeue()
+		t = c.next_task()
+		print(lic[t.get_location()])
+		print(c.check_if_tasks() == False)
+		em = c.check_if_tasks()
+		if(lic[t.get_location()]):
+			print(str(c) + " has been killed")
+			c.kill()
+			self.__murdered.push(c)
+		elif(em == False):
+			print(str(c) + " has returned to cafeteria")
+			self.__cafetaria.enqueue(c)
+		elif(em):
+			print(repr(c))
+			self.__survived.push(c)
+		print((self.__cafetaria))
+		
+		# print(repr(c))
 p = parse_Tasks('tasks_01.csv')
 s = Ship(p[1:-4],4)
 # print(repr(s.get_caf()))
-s.next_turn()
+while s.check_result():
+	print(1)
+	# input("hi")
+	# check if 
+	s.next_turn()
+# a = Crewmate("red")
+# b = Crewmate("blue")
+# print(a)
