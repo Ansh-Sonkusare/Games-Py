@@ -155,9 +155,10 @@ def main():
 	if(i.strip() == ''):
 		return
 	elif(int(i)):
-		s = Ship(p , i)
+		s = Ship(p , int(i))
 	else:
 		s = Ship(p , 4)
-	
+	while s.check_result():
+		s.next_turn()
 
 main()
