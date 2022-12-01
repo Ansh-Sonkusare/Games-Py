@@ -1,6 +1,7 @@
 import node_stack
 import random
-
+import array_queue
+import math
 class Task:
 	__slots__=["__name", "__location"]
 
@@ -32,10 +33,10 @@ def parse_Tasks(file):
 
 
 class Crewmate:
-	__slots__=["__color", "__tasks"]
+	__slots__=["__color", "__tasks" ,"__murdered"]
 	
 	def __init__ (self,color):
-		
+		self.__murdered = False
 		self.__color = color
 		self.__tasks=node_stack.Stack()
 
@@ -44,50 +45,75 @@ class Crewmate:
 
 	def next_task(self):
 		return self.__tasks.pop()
-
+	def kill(self):
+		self.__murdered = True
+		return 
 	def __str__ (self):
-		String = self.__color + "crewmate"
+		String = self.__color + " crewmate"
 		if self.__murdered:
 			String += "(deceased)"
 		return String
 	def __repr__(self) -> str:
-		print("Crewmate:")
-		print(f"    color={self.__color}" )
-		print(f"    murdered={self.__color}" )
-		print(f"    tasks={self.__tasks}" )
+		return f"Crewmate:\n\
+	color={self.__color} \n\
+	murdered={self.__color} \n\
+	tasks={self.__tasks}" 
 
 
 class Ship:
-	__slots__ = ["__locations", "__tasks" , "__colours" , "__cafetaria" ]
+	__slots__ = ["__locations", "__tasks" , "__cafetaria"  , "__locs_2" , "__survived" , "__murdered"]
 	
 	def __init__ (self,tasks , imposters = 1 ):
-		self.__colours = ["Black", "Blue", "Brown", "Cyan", "Green", "Pink", "Purple", "Red", "White",  "Yellow"]
-		random.shuffle(self.__colours)
+
+
+		# initialisation
+		self.__locs_2 = dict()
+		self.__survived = []
+		self.__murdered = []
+		__colours = ["Black", "Blue", "Brown", "Cyan", "Green", "Pink", "Purple", "Red", "White",  "Yellow"]
+		random.shuffle(__colours)
 		self.__tasks = tasks
 		self.__locations= dict()
+		self.__cafetaria = array_queue.Queue()
 
 		if(imposters>4 or imposters < 1):
 			raise ValueError
 		crewmates = 10 - imposters	
 
-		for task in tasks:
-			location = task.get_location()
-			if(location not in self.__locations.keys()):
-				self.__locations[task.get_location()] = []
-				# self.__locations[task.get_location()].append(task)
-			self.__locations[task.get_location()].append(task)
-		
+		# for task in tasks:
+		# 	location = task.get_location()
+		# 	if(location not in self.__locations.keys()):
+		# 		self.__locations[task.get_location()] = []
+		# 		# self.__locations[task.get_location()].append(task)
+		# 	self.__locations[task.get_location()].append(task)
+		tasks_per_crew = math.ceil(len(self.__tasks)/crewmates)
+
+
+	
 		for i in range(crewmates):
-			crew = Crewmate(self.__colours.pop())
-			n_of_task = random.randint(3,6)
+			# print(len(self.__tasks))
+			if(len(self.__tasks) <= 0):
+				break
+			crew = Crewmate(__colours.pop())
+			n_of_task = random.randint(tasks_per_crew,6)
+			# print(n_of_task)
 			for i in range(n_of_task):
+				if(len(self.__tasks) <= 0):
+					break
 				crew.assign_task(self.__tasks.pop())
+			self.__cafetaria.enqueue(crew)
 		locations = self.__locations
 
 
 	def get_locations(self):
 		return self.__locations
+	def next_turn(self):
+		print(self.__cafetaria)
+		print(self.__tasks)
+		# print(__colours)
+		print(self.__locations)
 
 p = parse_Tasks('tasks_01.csv')
-s = Ship(p)
-print(s.get_locations())
+s = Ship(p[1:-4],4)
+# print(repr(s.get_caf()))
+s.next_turn()

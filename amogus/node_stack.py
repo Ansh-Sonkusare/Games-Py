@@ -41,3 +41,5 @@ class Stack:
         return self.__size
     def is_empty(self):
         return self.__top==None
+
+
