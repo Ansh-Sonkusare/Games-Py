@@ -146,14 +146,18 @@ class Ship:
 		print((self.__cafetaria))
 		
 		# print(repr(c))
-p = parse_Tasks('tasks_01.csv')
-s = Ship(p[1:-4],4)
-# print(repr(s.get_caf()))
-while s.check_result():
-	print(1)
-	# input("hi")
-	# check if 
-	s.next_turn()
-# a = Crewmate("red")
-# b = Crewmate("blue")
-# print(a)
+
+
+def main():
+	p = parse_Tasks('tasks_01.csv')
+	p = p[1:-4]
+	i = input()
+	if(i.strip() == ''):
+		return
+	elif(int(i)):
+		s = Ship(p , i)
+	else:
+		s = Ship(p , 4)
+	
+
+main()
